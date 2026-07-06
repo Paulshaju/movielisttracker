@@ -1,36 +1,65 @@
 import { describe, expect, it, beforeEach } from "vitest";
-import { Movie } from "@/lib/types";
+import { IMovie, IMovieDetails } from "@/types";
 import { addToWatchlist, moveToWatched, movieStore, removeFromWatchlist } from "./store";
 
-const paris: Movie = { imdbID: "tt0087884", title: "Paris, Texas", year: "1984", poster: "N/A" };
-
+const inception: IMovieDetails = {
+    Title: "Inception",
+    Year: "2010",
+    Rated: "PG-13",
+    Released: "16 Jul 2010",
+    Runtime: "148 min",
+    Genre: "Action, Adventure, Sci-Fi",
+    Director: "Christopher Nolan",
+    Writer: "Christopher Nolan",
+    Actors: "Leonardo DiCaprio, Joseph Gordon-Levitt, Elliot Page",
+    Plot: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO, but his tragic past may doom the project and his team to disaster.",
+    Language: "English, Japanese, French",
+    Country: "United Kingdom, United States",
+    Awards: "Won 4 Oscars. 160 wins & 220 nominations total",
+    Poster: "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_QL75_UX380_CR0,0,380,562_.jpg",
+    Ratings: [
+        { Source: "Internet Movie Database", Value: "8.8/10" },
+        { Source: "Rotten Tomatoes", Value: "87%" },
+        { Source: "Metacritic", Value: "74/100" },
+    ],
+    Metascore: "74",
+    imdbRating: "8.8",
+    imdbVotes: "2,811,614",
+    imdbID: "tt0087884",
+    Type: "movie",
+    DVD: "N/A",
+    BoxOffice: "$292,587,330",
+    Production: "N/A",
+    Website: "N/A",
+    Response: "True",
+};
 beforeEach(() => {
     movieStore.watchlist = [];
     movieStore.watched = [];
 });
 
 describe("addToWatchlist", () => {
-    it("adds a movie to the watchlist", () => {
-        addToWatchlist(paris);
+    it("adds a Movie to the watchlist", () => {
+        addToWatchlist(inception);
         expect(movieStore.watchlist).toHaveLength(1);
     });
 
-    it("does not add the same movie twice", () => {
-        addToWatchlist(paris);
-        addToWatchlist(paris);
+    it("does not add the same IMovie twice", () => {
+        addToWatchlist(inception);
+        addToWatchlist(inception);
         expect(movieStore.watchlist).toHaveLength(1);
     });
 });
 
 describe("moveToWatched", () => {
-    it("moves a movie from watchlist to watched with a rating and note", () => {
-        addToWatchlist(paris);
+    it("moves a Movie from watchlist to watched with a userRating and note", () => {
+        addToWatchlist(inception);
         moveToWatched("tt0087884", 4, "Wenders at his best");
         expect(movieStore.watchlist).toHaveLength(0);
-        expect(movieStore.watched[0]).toMatchObject({ imdbID: "tt0087884", rating: 4, note: "Wenders at his best" });
+        expect(movieStore.watched[0]).toMatchObject({ imdbID: "tt0087884", userRating: 4, note: "Wenders at his best" });
     });
 
-    it("does nothing if the movie isn't on the watchlist", () => {
+    it("does nothing if the IMovie isn't on the watchlist", () => {
         moveToWatched("not-there", 5);
         expect(movieStore.watched).toHaveLength(0);
     });
@@ -38,7 +67,7 @@ describe("moveToWatched", () => {
 
 describe("removeFromWatchlist / removeFromWatched / updateWatched", () => {
     it("removes and updates correctly", () => {
-        addToWatchlist(paris);
+        addToWatchlist(inception);
         removeFromWatchlist("tt0087884");
         expect(movieStore.watchlist).toHaveLength(0);
     });

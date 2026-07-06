@@ -1,0 +1,40 @@
+"use client";
+
+import { useSnapshot } from "valtio";
+import { movieStore, removeFromWatched } from "@/store/store";
+import { Separator } from "@/components/ui/separator";
+import { WatchedCard } from "./WatchedCard";
+
+export function WatchedlistContainer() {
+    const snap = useSnapshot(movieStore);
+
+    if (snap.watchlist.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-12 text-center">
+                <p className="text-sm font-medium text-foreground">Your watchlist is empty</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                    Search for a IMovie and add it to see it here.
+                </p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="w-full space-y-2">
+            <div className="flex items-baseline justify-between">
+                <h2 className="text-lg font-medium text-foreground">Watched</h2>
+                <span className="text-sm text-muted-foreground">{snap.watched.length}</span>
+            </div>
+            <Separator />
+            <div className="lg:grid flex flex-wrap grid-cols-3 gap-2">
+                {snap.watched.map((IMovie) => (
+                    <WatchedCard
+                        key={IMovie.imdbID}
+                        entry={IMovie}
+                        onRemove={() => removeFromWatched(IMovie.imdbID)} />
+                ))}
+            </div>
+
+        </div>
+    );
+}
