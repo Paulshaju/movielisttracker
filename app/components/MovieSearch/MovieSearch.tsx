@@ -4,14 +4,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSnapshot } from "valtio";
 import { Input } from "@/components/ui/input";
 import { IMovie } from "@/types";
-import { addToWatchlist, movieStore } from "@/store/store";
 import { searchMovies } from "../../api/movie.api";
 import { toast } from "sonner";
 import debounce from 'lodash/debounce';
-import { MovieCard } from "../Common/MovieCard";
+import { MovieCard } from "../../Common/MovieCard";
 import { MoviePagination } from "./MoviePaginations";
 import { Film, Loader2, SearchX } from "lucide-react";
-import { EmptyState } from "../Common/EmptyState";
+import { EmptyState } from "../../Common/EmptyState";
+import { AddToLists } from "../AddToLists/AddToLists";
 
 const RESULTS_PER_PAGE = 10;
 const MAX_PAGES = 10;
@@ -22,7 +22,8 @@ export function MovieSearch() {
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [totalResults, setTotalResults] = useState(0);
-    const snap = useSnapshot(movieStore);
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const [selectedMovie, setSelectedMovie] = useState<IMovie | undefined>(undefined);
 
     const queryRef = useRef(query);
     queryRef.current = query;
@@ -54,7 +55,7 @@ export function MovieSearch() {
             setPage(1);
 
             performSearch(query, 1);
-        }, 500), // Wait 500 milliseconds after the last keystroke
+        }, 200), // Wait 500 milliseconds after the last keystroke
         []
     );
     const handleChange = (e: any) => {
@@ -94,7 +95,7 @@ export function MovieSearch() {
             </div>
 
             {query.trim() && (
-                <div className="mt-8 w-full max-w-5xl">
+                <div className="mt-8 w-full ">
                     <div className="flex items-baseline justify-between border-b pb-3">
                         <h2 className="text-lg font-medium text-foreground">
                             Results for &ldquo;{query}&rdquo;
@@ -112,10 +113,13 @@ export function MovieSearch() {
             }
 
             {results.length > 0 ? (
-                <div className="mt-8">
-                    <div className="flex w-full max-w-5xl flex-wrap justify-center gap-4 lg:grid lg:grid-cols-3">
+                <div className="mt-8 w-full">
+                    <div className="flex w-full  flex-wrap justify-center gap-4 lg:grid lg:grid-cols-5 mb-4">
                         {results.map((movie) => {
-                            return <MovieCard key={movie.imdbID} movie={movie} />;
+                            return <MovieCard key={movie.imdbID} movie={movie} onAddTolist={() => {
+                                setSelectedMovie(movie);
+                                setOpenDrawer(true)
+                            }} />;
                         })}
                     </div>
 
@@ -139,6 +143,7 @@ export function MovieSearch() {
                     description="Start typing above to search thousands of movies and shows."
                 />
             ) : null}
+            {selectedMovie && <AddToLists onOpenChange={(open) => setOpenDrawer(open)} open={openDrawer} selectedMovie={selectedMovie} />}
         </div>
     );
 }

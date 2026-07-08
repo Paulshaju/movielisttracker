@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Loader2, Trophy, Bookmark } from "lucide-react";
+import { Loader2, Trophy, Bookmark, BookmarkPlusIcon } from "lucide-react";
 import { IMovie, IMovieDetails } from "@/types";
 import {
     Popover,
@@ -11,12 +11,13 @@ import {
 } from "@/components/ui/popover";
 import { getMovieDetails } from "@/app/api/movie.api";
 import { useSnapshot } from "valtio";
-import { addToWatchlist, movieStore, removeFromWatchlist } from "@/store/store";
+import { movieStore } from "@/store/store";
 import { toast } from "sonner";
 import { formatRuntime, getRatingBadges } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { AddToLists } from "../components/AddToLists/AddToLists";
 
 
 
@@ -101,15 +102,15 @@ function DetailsContent({
 
 export function MovieCard({
     movie,
+    onAddTolist,
 }: {
     movie: IMovie;
+    onAddTolist: () => void;
 }) {
     const [imgError, setImgError] = useState(false);
     const [details, setDetails] = useState<IMovieDetails | null>(null);
     const [loadingDetails, setLoadingDetails] = useState(false);
     const [error, setError] = useState(false);
-    const { watchlist } = useSnapshot(movieStore);
-    const [isSaving, setIsSaving] = useState(false);
 
     const showPoster = movie.Poster !== "N/A" && !imgError;
 
@@ -129,36 +130,6 @@ export function MovieCard({
             }
         }
     };
-    const saved = watchlist.find((elm) => elm.imdbID === movie.imdbID);
-    const handleWatchlistToggle = async () => {
-        setIsSaving(true);
-        try {
-            if (saved) {
-                await removeFromWatchlist(movie.imdbID);
-            } else {
-                await addDetailsAndWatchList(movie);
-            }
-        } finally {
-            await new Promise((resolve) => setTimeout(resolve, 400));
-            setIsSaving(false);
-        }
-    };
-
-    const addDetailsAndWatchList = async (movie: IMovie) => {
-        setLoadingDetails(true);
-        setError(false);
-        try {
-            const full = await getMovieDetails(movie.imdbID);
-            addToWatchlist({ ...full, addedAt: new Date().toDateString() })
-
-        }
-        catch (err) {
-            toast.error('Failed to fetch the details')
-        }
-        finally {
-            setLoadingDetails(false);
-        }
-    }
 
     return (
         <div className="relative w-full overflow-hidden rounded-lg bg-[#0D0D10] shadow-[0_20px_50px_-15px_rgba(0,0,0,0.6)]">
@@ -171,6 +142,7 @@ export function MovieCard({
                         sizes="280px"
                         className="object-cover"
                         onError={() => setImgError(true)}
+                        unoptimized
                     />
                 ) : (
                     <div className="flex h-full w-full items-center justify-center  text-sm text-muted-forground">
@@ -184,11 +156,21 @@ export function MovieCard({
                     {movie.Type}
                 </span>
             </div>
-            <div className="flex flex-row justify-between items-center p-3">
+            <div className="flex flex-col flex-1 justify-between items-start p-3 gap-2">
                 <Popover onOpenChange={handleOpenChange}>
-                    <PopoverTrigger>
-                        <span className="block w-full p-1 text-left cursor-pointer">
-                            <h3 className="text-[19px] font-semibold text-[#F5F3EE]">{movie.Title}</h3>
+                    <PopoverTrigger className={'w-5/6'}>
+                        <span className="w-full p-1 text-left cursor-pointer w-1/2">
+                            <Tooltip>
+                                <TooltipTrigger render={
+                                    <h3 className="text-[19px] font-semibold text-[#F5F3EE] truncate cursor-default">
+                                        {movie.Title}
+                                    </h3>
+                                }>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{movie.Title}</p>
+                                </TooltipContent>
+                            </Tooltip>
                             <p className="mt-1 text-[12px] text-[#9A9AA2]">
                                 {movie.Year} • Tap for details
                             </p>
@@ -198,27 +180,12 @@ export function MovieCard({
                         <DetailsContent loading={loadingDetails} error={error} details={details} />
                     </PopoverContent>
                 </Popover>
-                <Tooltip>
-                    <TooltipTrigger render={
-                        <Button
-                            className={'border-none cursor-pointer'}
-                            disabled={isSaving}
-                            onClick={handleWatchlistToggle}
-                        >
-                            {isSaving ? (
-                                <Loader2 className="animate-spin" />
-                            ) : (
-                                <Bookmark className={watchlist.find((elm) => elm.imdbID === movie.imdbID) ? "fill-current" : ""} />
-                            )}
-                        </Button>
-                    } />
-                    <TooltipContent>
-                        <p>{watchlist.find((elm) => elm.imdbID === movie.imdbID) ? "Remove from watchlist" : "Add to watchlist"}</p>
-                    </TooltipContent>
-                </Tooltip>
-
+                <div className="w-full">
+                    <Button variant={'default'} size={'sm'} className={'w-full'} onClick={onAddTolist}>
+                        <BookmarkPlusIcon className="w-5 h-5" /> Add to list
+                    </Button>
+                </div>
             </div>
-
 
         </div >
     );

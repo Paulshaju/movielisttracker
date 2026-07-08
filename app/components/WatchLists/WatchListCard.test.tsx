@@ -1,11 +1,11 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { moveToWatched, removeFromWatchlist } from "@/store/store";
+import { moveToWatched, removeFromList, removeFromWatchlist } from "@/store/store";
 import { WatchlistCard } from "./WatchListCard";
 
 vi.mock("@/store/store", () => ({
     moveToWatched: vi.fn(),
-    removeFromWatchlist: vi.fn(),
+    removeFromList: vi.fn(),
 }));
 
 // next/image wants real image optimization config we don't have in tests —
@@ -16,7 +16,7 @@ vi.mock("next/image", () => ({
 
 // WatchedButton presumably opens its own rating/note flow — not our concern here,
 // we just need something we can click to trigger onConfirm
-vi.mock("../Common/WatchedButton", () => ({
+vi.mock("../../Common/WatchedButton", () => ({
     WatchedButton: ({ onConfirm }: any) => (
         <button onClick={() => onConfirm(4, "great movie")}>Mark watched</button>
     ),
@@ -86,12 +86,12 @@ describe("WatchlistCard", () => {
         expect(screen.queryByText(/thief who steals/)).not.toBeInTheDocument();
     });
 
-    it("calls removeFromWatchlist with the correct imdbID when the X is clicked", () => {
+    it("calls removeFromlist with the correct imdbID when the X is clicked", () => {
         render(<WatchlistCard movieDetails={baseMovie} />);
 
         fireEvent.click(screen.getByLabelText("Remove Inception from watchlist"));
 
-        expect(removeFromWatchlist).toHaveBeenCalledWith("tt1375666");
+        expect(removeFromList).toHaveBeenCalledWith("watchlist", "tt1375666");
     });
 
     it("calls moveToWatched with the rating and note from WatchedButton", () => {

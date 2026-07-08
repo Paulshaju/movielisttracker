@@ -2,7 +2,8 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { movieStore } from "@/store/store";
 import { WatchlistContainer } from "./WatchListContainer";
-import { IMovieDetails } from "@/types";
+import { IMovieDetails, IPlaylistListItem } from "@/types";
+import { proxyMap } from "valtio/utils";
 
 // stubbing WatchlistCard out — we're testing the container's own logic here,
 // not the card's rendering, and the real card pulls in a bunch of stuff we don't care about
@@ -13,7 +14,10 @@ vi.mock("./WatchListCard", () => ({
 describe("WatchlistContainer", () => {
     beforeEach(() => {
         // reset the store between tests since it's a module-level singleton
-        movieStore.watchlist = [];
+        movieStore.playlists = proxyMap<string, IPlaylistListItem[]>([
+            ['watched', []],
+            ['watchlist', []],
+        ]);
     });
 
     it("shows the empty state when there's nothing in the watchlist", () => {
@@ -24,10 +28,10 @@ describe("WatchlistContainer", () => {
     });
 
     it("renders a card per movie once items are added", () => {
-        movieStore.watchlist = [
+        movieStore.playlists.set('watchlist', [
             { imdbID: "tt1", Title: "The Matrix" } as any,
             { imdbID: "tt2", Title: "Inception" } as any,
-        ];
+        ]);
 
         render(<WatchlistContainer />);
 
@@ -37,7 +41,7 @@ describe("WatchlistContainer", () => {
     });
 
     it("keeps the header count in sync with the list", () => {
-        movieStore.watchlist = [{ imdbID: "tt1", Title: "The Matrix" } as any];
+        movieStore.playlists.set('watchlist', [{ imdbID: "tt1", Title: "The Matrix" } as any]);
 
         render(<WatchlistContainer />);
 

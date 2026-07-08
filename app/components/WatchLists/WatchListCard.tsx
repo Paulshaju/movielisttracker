@@ -2,24 +2,25 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Snapshot } from "valtio";
-import { IMovieDetails, IRating } from "@/types";
+import { Snapshot, useSnapshot } from "valtio";
+import { IPlaylistListItem, IRating } from "@/types";
 import { X, Clock, Trophy } from "lucide-react";
 import { getRatingBadges } from "@/lib/utils";
-import { WatchedButton } from "../Common/WatchedButton";
-import { moveToWatched, removeFromWatchlist } from "@/store/store";
+import { WatchedButton } from "../../Common/WatchedButton";
+import { getTagsForMovie, moveToWatched, movieStore, removeFromList, removeTagFromMovie, useTagsForMovie } from "@/store/store";
+import { TagBadge } from "../../Common/TagBadge";
+import { AddTagsPopover } from "../AddTags/AddTagsPopover";
 
 export function WatchlistCard({
     movieDetails,
 }: {
-    movieDetails: Snapshot<IMovieDetails>;
+    movieDetails: Snapshot<IPlaylistListItem>;
 }) {
     const [imgError, setImgError] = useState(false);
-    // check for Image errors
     const showPoster = movieDetails.Poster !== "N/A" && !imgError;
-    // we only show the first one here to keep the card compact
     const genre = (movieDetails.Genre || "").split(",")[0]?.trim();
     const badges = getRatingBadges(movieDetails.Ratings as IRating[]);
+    const tags = useTagsForMovie(movieDetails.imdbID)
 
     return (
         <div data-testid={`watchlist-card-${movieDetails.imdbID}`} className="group flex gap-4 rounded-2xl border border-border/60 bg-card p-3 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-md">
@@ -32,6 +33,7 @@ export function WatchlistCard({
                         sizes="80px"
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                         onError={() => setImgError(true)}
+                        unoptimized
                     />
                 ) : (
                     <div className="flex h-full w-full items-center justify-center text-[10px] text-muted-foreground">
@@ -42,11 +44,15 @@ export function WatchlistCard({
 
             <div className="min-w-0 flex-1 space-y-1.5">
                 <div className="flex items-start justify-between gap-2">
-                    <p className="truncate text-[15px] font-semibold leading-tight text-foreground">
-                        {movieDetails.Title}
-                    </p>
+                    <div className="flex flex-row items-center gap-4">
+                        <p className="truncate text-[15px] font-semibold leading-tight text-foreground">
+                            {movieDetails.Title}
+                        </p>
+                        <AddTagsPopover imdbID={movieDetails.imdbID} availableTags={useTagsForMovie(movieDetails.imdbID)} />
+                    </div>
+
                     <button
-                        onClick={() => removeFromWatchlist(movieDetails.imdbID)}
+                        onClick={() => removeFromList('watchlist', movieDetails.imdbID)}
                         aria-label={`Remove ${movieDetails.Title} from watchlist`}
                         className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
                     >
@@ -85,6 +91,17 @@ export function WatchlistCard({
                     </div>
                 )}
 
+                {tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                        {tags.map((tag) => (
+                            <TagBadge
+                                key={tag}
+                                tag={tag}
+                            />
+                        ))}
+                    </div>
+                )}
+
                 {movieDetails.Plot && movieDetails.Plot !== "N/A" && (
                     <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
                         {movieDetails.Plot}
@@ -100,7 +117,7 @@ export function WatchlistCard({
 
                 <div className="pt-1">
                     <WatchedButton
-                        onConfirm={(IRating, note) => moveToWatched(movieDetails.imdbID, IRating, note)}
+                        onConfirm={(rating, note) => moveToWatched(movieDetails.imdbID, rating, note)}
                     />
                 </div>
             </div>

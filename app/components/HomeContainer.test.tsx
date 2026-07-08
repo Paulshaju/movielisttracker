@@ -3,10 +3,18 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { addToWatchlist, movieStore } from "@/store/store";
 import { HomeContainer } from "./HomeContainer";
+import { proxyMap } from "valtio/utils";
+import { IPlaylistListItem } from "@/types";
+
 
 beforeEach(() => {
-    movieStore.watchlist = [];
-    movieStore.watched = [];
+    movieStore.playlists = proxyMap<string, IPlaylistListItem[]>([
+        ['watched', []],
+        ['watchlist', []],
+    ]);
+    movieStore.tags = proxyMap<string, string[]>([
+        ['must-watched', []]
+    ]);
 });
 
 describe("HomeContainer", () => {

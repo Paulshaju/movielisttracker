@@ -31,19 +31,17 @@ export interface IMovieDetails {
     Response: "True" | "False";
 }
 
-export interface IWatchlistItem extends IMovieDetails {
-    addedAt: string;
-}
 
-export interface IWatchedItem extends IMovieDetails {
-    watchedAt: string;
-    userRating: number;
+export interface IPlaylistListItem extends IMovieDetails {
+    addedAt: string;
+    watchedAt?: string;
+    userRating?: number;
     note?: string;
 }
 
 export interface IMovieStore {
-    watchlist: IWatchlistItem[];
-    watched: IWatchedItem[];
+    playlists: Map<string, IPlaylistListItem[]>;
+    tags: Map<string, string[]>;
 }
 
 export interface IMovieSearchResponse {

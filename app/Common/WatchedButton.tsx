@@ -40,19 +40,20 @@ function StarPicker({ value, onChange }: { value: number; onChange: (n: number) 
 export function WatchedButton({
     onConfirm,
 }: {
-    onConfirm: (IRating: number, note?: string) => void;
+    onConfirm: (rating: number, note?: string) => void;
 }) {
     const [open, setOpen] = useState(false);
-    const [IRating, setRating] = useState(0);
+    const [rating, setRating] = useState(0);
     const [note, setNote] = useState("");
     const [attemptedSubmit, setAttemptedSubmit] = useState(false);
 
     const handleConfirm = () => {
-        if (IRating === 0) {
+        console.log('testing', rating)
+        if (rating === 0) {
             setAttemptedSubmit(true);
             return;
         }
-        onConfirm(IRating, note);
+        onConfirm(rating, note);
         setOpen(false);
         setRating(0);
         setNote("");
@@ -65,27 +66,30 @@ export function WatchedButton({
             onOpenChange={(next) => {
                 setOpen(next);
                 if (!next) {
-                    // Reset validation state on close without submitting,
-                    // but keep IRating/note in case they reopen to finish.
                     setAttemptedSubmit(false);
                 }
             }}
         >
             <PopoverTrigger render={<Button variant={'outline'} size={'sm'} className={'hover:bg-primary/10'}>
                 <Check size={12} />
-                Watched
+                Mark as watched
             </Button>} />
 
             <PopoverContent className="w-72" side="top" align="start">
                 <div className="space-y-3">
                     <div>
+                        <p className="text-sm font-semibold text-foreground">Mark as watched</p>
+                        <p className="text-xs text-muted-foreground">Rate it to move it to your Watched list.</p>
+                    </div>
+
+                    <div>
                         <p className="mb-1.5 text-sm font-medium text-foreground">
-                            Your IRating <span className="text-destructive">*</span>
+                            Your rating <span className="text-destructive">*</span>
                         </p>
-                        <StarPicker value={IRating} onChange={setRating} />
-                        {attemptedSubmit && IRating === 0 && (
+                        <StarPicker value={rating} onChange={setRating} />
+                        {attemptedSubmit && rating === 0 && (
                             <p className="mt-1 text-xs text-destructive">
-                                Pick a IRating to continue.
+                                Pick a rating to continue.
                             </p>
                         )}
                     </div>
@@ -107,7 +111,7 @@ export function WatchedButton({
                             Cancel
                         </Button>
                         <Button size="sm" onClick={handleConfirm}>
-                            Confirm
+                            Move to Watched
                         </Button>
                     </div>
                 </div>
