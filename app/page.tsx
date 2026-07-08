@@ -1,4 +1,4 @@
-'use server'
+"use server";
 import { Video } from "lucide-react";
 import { HomeContainer } from "./components/HomeContainer";
 

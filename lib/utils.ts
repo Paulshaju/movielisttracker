@@ -1,9 +1,9 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import { IMovieDetails } from "../types";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function formatRuntime(runtime: string) {
@@ -14,9 +14,10 @@ export function formatRuntime(runtime: string) {
   return hours > 0 ? `${hours}h ${mins}min` : `${mins}min`;
 }
 export function getRatingBadges(ratings: IMovieDetails["Ratings"]) {
-  const find = (source: string) => ratings?.find((r) => r.Source === source)?.Value;
+  const find = (source: string) =>
+    ratings?.find((r) => r.Source === source)?.Value;
   return [
-    { label: "IMDb", value: find("Internet IMovie Database") },
+    { label: "IMDb", value: find("Internet movie Database") },
     { label: "RT", value: find("Rotten Tomatoes") },
     { label: "Meta", value: find("Metacritic") },
   ].filter((r) => r.value);

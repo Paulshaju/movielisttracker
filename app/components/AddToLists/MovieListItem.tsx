@@ -1,28 +1,30 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
-import { Pencil, Star, Trash2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { useState } from 'react'
-import { IMovie, IMovieDetails, IPlaylistListItem } from '@/types'
-import { TagBadge } from '../../Common/TagBadge'
-import { AddToLists } from './AddToLists'
-import { removeFromList, useTagsForMovie } from '@/store/store'
-import { AddTagsPopover } from '../AddTags/AddTagsPopover'
-
+import Image from "next/image";
+import { Pencil, Star, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { IMovie, IPlaylistListItem } from "@/types";
+import { TagBadge } from "../../Common/TagBadge";
+import { AddToLists } from "./AddToLists";
+import { removeFromList, useTagsForMovie } from "@/store/store";
+import { AddTagsPopover } from "../AddTags/AddTagsPopover";
 
 interface MovieListItemProps {
-    movie: IPlaylistListItem
-    listId: string
-    readOnly?: boolean
+    movie: IPlaylistListItem;
+    listId: string;
+    readOnly?: boolean;
 }
 
-export function MovieListItem({ movie, listId, readOnly = false }: MovieListItemProps) {
-    const [sheetOpen, setSheetOpen] = useState(false)
+export function MovieListItem({
+    movie,
+    listId,
+    readOnly = false,
+}: MovieListItemProps) {
+    const [sheetOpen, setSheetOpen] = useState(false);
     const [imgError, setImgError] = useState(false);
     const showPoster = movie.Poster !== "N/A" && !imgError;
-    const tags = useTagsForMovie(movie.imdbID)
-
+    const tags = useTagsForMovie(movie.imdbID);
 
     return (
         <>
@@ -48,9 +50,14 @@ export function MovieListItem({ movie, listId, readOnly = false }: MovieListItem
 
                 {/* Info */}
                 <div className="flex min-w-0 flex-1 flex-col gap-1">
-                    <div className='flex flex-row gap-2'>
-                        <p className="truncate text-sm font-semibold text-foreground">{movie.Title}</p>
-                        <AddTagsPopover imdbID={movie.imdbID} availableTags={useTagsForMovie(movie.imdbID)} />
+                    <div className="flex flex-row gap-2">
+                        <p className="truncate text-sm font-semibold text-foreground">
+                            {movie.Title}
+                        </p>
+                        <AddTagsPopover
+                            imdbID={movie.imdbID}
+                            availableTags={useTagsForMovie(movie.imdbID)}
+                        />
                     </div>
 
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -105,9 +112,11 @@ export function MovieListItem({ movie, listId, readOnly = false }: MovieListItem
 
             {!readOnly && (
                 <AddToLists
-                    onOpenChange={setSheetOpen} open={sheetOpen} selectedMovie={movie as IMovie}
+                    onOpenChange={setSheetOpen}
+                    open={sheetOpen}
+                    selectedMovie={movie as IMovie}
                 />
             )}
         </>
-    )
+    );
 }

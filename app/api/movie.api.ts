@@ -1,9 +1,12 @@
-'use server'
-import { IMovieSearchResponse, IMovie, IMovieDetails } from "@/types";
+"use server";
+import { IMovieSearchResponse, IMovieDetails } from "@/types";
 
 const MIN_QUERY_LENGTH = 3;
 
-export async function searchMovies(query: string, page: number = 1): Promise<IMovieSearchResponse | undefined> {
+export async function searchMovies(
+    query: string,
+    page: number = 1,
+): Promise<IMovieSearchResponse | undefined> {
     const q = query.trim();
     if (q.length < MIN_QUERY_LENGTH) return undefined;
 
@@ -35,7 +38,7 @@ export async function getMovieDetails(imdbID: string): Promise<IMovieDetails> {
 
     const request = (async () => {
         const res = await fetch(
-            `https://www.omdbapi.com/?apikey=${API_KEY}&i=${imdbID}&plot=full`
+            `https://www.omdbapi.com/?apikey=${API_KEY}&i=${imdbID}&plot=full`,
         );
         const data = await res.json();
 
@@ -43,9 +46,9 @@ export async function getMovieDetails(imdbID: string): Promise<IMovieDetails> {
             throw new Error(data.Error || "Failed to fetch Movie details");
         }
 
-        const IMovie = data as IMovieDetails;
-        detailsCache.set(imdbID, IMovie);
-        return IMovie;
+        const movie = data as IMovieDetails;
+        detailsCache.set(imdbID, movie);
+        return movie;
     })();
 
     inFlight.set(imdbID, request);

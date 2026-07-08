@@ -1,8 +1,7 @@
-import { Textarea } from "@/components/ui/textarea"
-import { cn } from "@/lib/utils"
-import { Check, Loader2, Plus, Star } from "lucide-react"
-import { useState } from "react"
-
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { Check, Loader2, Star } from "lucide-react";
+import { useState } from "react";
 
 export const ListCard = ({
     listName,
@@ -25,10 +24,9 @@ export const ListCard = ({
     setNote?: (note: string) => void;
     isLoading?: boolean;
 }) => {
-    const [tagInput, setTagInput] = useState('');
-    const [noteInput, setNoteInput] = useState(note ?? '');
+    const [noteInput, setNoteInput] = useState(note ?? "");
 
-    const isWatched = listName === 'watched';
+    const isWatched = listName === "watched";
 
     return (
         <div className="flex flex-col gap-2 rounded-md border border-border bg-background p-3 w-full">
@@ -40,10 +38,10 @@ export const ListCard = ({
             >
                 <span
                     className={cn(
-                        'flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md border-2 transition-colors',
+                        "flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md border-2 transition-colors",
                         inList
-                            ? 'border-primary bg-primary text-primary-foreground'
-                            : 'border-border bg-transparent'
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-border bg-transparent",
                     )}
                 >
                     {isLoading ? (
@@ -52,7 +50,9 @@ export const ListCard = ({
                         inList && <Check className="h-3 w-3" />
                     )}
                 </span>
-                <span className="text-sm font-medium text-foreground capitalize">{listName}</span>
+                <span className="text-sm font-medium text-foreground capitalize">
+                    {listName}
+                </span>
                 <span className="ml-auto text-xs text-muted-foreground">
                     {noOfMovies ?? 0} movies
                 </span>
@@ -76,7 +76,7 @@ export const ListCard = ({
                                                 "h-4 w-4",
                                                 (userRating ?? 0) >= star
                                                     ? "fill-primary text-primary"
-                                                    : "text-muted-foreground"
+                                                    : "text-muted-foreground",
                                             )}
                                         />
                                     </button>

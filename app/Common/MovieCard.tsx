@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Loader2, Trophy, Bookmark, BookmarkPlusIcon } from "lucide-react";
+import { Loader2, Trophy, BookmarkPlusIcon } from "lucide-react";
 import { IMovie, IMovieDetails } from "@/types";
 import {
     Popover,
@@ -10,18 +10,14 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { getMovieDetails } from "@/app/api/movie.api";
-import { useSnapshot } from "valtio";
-import { movieStore } from "@/store/store";
-import { toast } from "sonner";
 import { formatRuntime, getRatingBadges } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { AddToLists } from "../components/AddToLists/AddToLists";
 
-
-
-
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 function DetailsContent({
     loading,
@@ -42,7 +38,11 @@ function DetailsContent({
     }
 
     if (error || !details) {
-        return <p className="py-4 text-sm text-destructive">Couldn&apos;t load details.</p>;
+        return (
+            <p className="py-4 text-sm text-destructive">
+                Couldn&apos;t load details.
+            </p>
+        );
     }
 
     const badges = getRatingBadges(details.Ratings);
@@ -50,7 +50,9 @@ function DetailsContent({
     return (
         <div className="space-y-3">
             <div>
-                <p className="text-[15px] font-semibold text-foreground">{details.Title}</p>
+                <p className="text-[15px] font-semibold text-foreground">
+                    {details.Title}
+                </p>
                 <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
                     {details.Rated && details.Rated !== "N/A" && (
                         <span className="rounded-[4px] border px-1.5 py-0.5 text-[11px]">
@@ -79,7 +81,9 @@ function DetailsContent({
                 </div>
             )}
 
-            <p className="text-[13px] leading-relaxed text-muted-foreground">{details.Plot}</p>
+            <p className="text-[13px] leading-relaxed text-muted-foreground">
+                {details.Plot}
+            </p>
 
             <div className="space-y-1 text-[12px] text-muted-foreground">
                 <p>
@@ -113,8 +117,6 @@ export function MovieCard({
     const [error, setError] = useState(false);
 
     const showPoster = movie.Poster !== "N/A" && !imgError;
-
-
 
     const handleOpenChange = async (open: boolean) => {
         if (open && !details && !loadingDetails) {
@@ -158,15 +160,16 @@ export function MovieCard({
             </div>
             <div className="flex flex-col flex-1 justify-between items-start p-3 gap-2">
                 <Popover onOpenChange={handleOpenChange}>
-                    <PopoverTrigger className={'w-5/6'}>
+                    <PopoverTrigger className={"w-5/6"}>
                         <span className="w-full p-1 text-left cursor-pointer w-1/2">
                             <Tooltip>
-                                <TooltipTrigger render={
-                                    <h3 className="text-[19px] font-semibold text-[#F5F3EE] truncate cursor-default">
-                                        {movie.Title}
-                                    </h3>
-                                }>
-                                </TooltipTrigger>
+                                <TooltipTrigger
+                                    render={
+                                        <h3 className="text-[19px] font-semibold text-[#F5F3EE] truncate cursor-default">
+                                            {movie.Title}
+                                        </h3>
+                                    }
+                                ></TooltipTrigger>
                                 <TooltipContent>
                                     <p>{movie.Title}</p>
                                 </TooltipContent>
@@ -177,16 +180,24 @@ export function MovieCard({
                         </span>
                     </PopoverTrigger>
                     <PopoverContent className="w-80" side="right" align="start">
-                        <DetailsContent loading={loadingDetails} error={error} details={details} />
+                        <DetailsContent
+                            loading={loadingDetails}
+                            error={error}
+                            details={details}
+                        />
                     </PopoverContent>
                 </Popover>
                 <div className="w-full">
-                    <Button variant={'default'} size={'sm'} className={'w-full'} onClick={onAddTolist}>
+                    <Button
+                        variant={"default"}
+                        size={"sm"}
+                        className={"w-full"}
+                        onClick={onAddTolist}
+                    >
                         <BookmarkPlusIcon className="w-5 h-5" /> Add to list
                     </Button>
                 </div>
             </div>
-
-        </div >
+        </div>
     );
 }

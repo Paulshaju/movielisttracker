@@ -5,11 +5,17 @@ import Image from "next/image";
 import { Snapshot } from "valtio";
 import { Star, X, Clock, Trophy, MessageSquareText } from "lucide-react";
 import { getRatingBadges } from "@/lib/utils";
-import { IPlaylistListItem, IRating, } from "@/types";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { IPlaylistListItem, IRating } from "@/types";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { AddTagsPopover } from "../AddTags/AddTagsPopover";
-import { getTagsForMovie, removeTagFromMovie, useTagsForMovie } from "@/store/store";
+import {
+    useTagsForMovie,
+} from "@/store/store";
 import { TagBadge } from "@/app/Common/TagBadge";
 
 function formatWatchedDate(iso: string) {
@@ -28,7 +34,20 @@ export function WatchedCard({
     onRemove: (imdbID: string) => void;
 }) {
     const [imgError, setImgError] = useState(false);
-    const { Genre, Poster, Title, Ratings, note, watchedAt, Awards, Runtime, imdbID, Plot, Year, userRating } = entry;
+    const {
+        Genre,
+        Poster,
+        Title,
+        Ratings,
+        note,
+        watchedAt,
+        Awards,
+        Runtime,
+        imdbID,
+        Plot,
+        Year,
+        userRating,
+    } = entry;
     const showPoster = Poster !== "N/A" && !imgError;
     const genre = (Genre || "").split(",")[0]?.trim();
     const badges = getRatingBadges(Ratings as IRating[]);
@@ -60,11 +79,14 @@ export function WatchedCard({
                         <p className="truncate text-[15px] font-semibold leading-tight text-foreground">
                             {Title}
                         </p>
-                        <AddTagsPopover imdbID={entry.imdbID} availableTags={useTagsForMovie(entry.imdbID)} />
+                        <AddTagsPopover
+                            imdbID={entry.imdbID}
+                            availableTags={useTagsForMovie(entry.imdbID)}
+                        />
                     </div>
 
                     <Button
-                        data-testid={'Remove'}
+                        data-testid={"Remove"}
                         onClick={() => onRemove(imdbID)}
                         aria-label={`Remove ${Title} from watched`}
                         className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-white opacity-0 transition-colors group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
@@ -90,7 +112,6 @@ export function WatchedCard({
                             <span>{genre}</span>
                         </>
                     )}
-
                 </div>
 
                 {badges.length > 0 && (
@@ -119,24 +140,24 @@ export function WatchedCard({
                     </div>
                 )}
 
-
                 {/* User IRating */}
                 <div className="p-2 border rounded-md space-y-2">
                     <div className="flex flex-col items-start justify-between pt-0.5 gap-2">
                         <div className="flex flex-row w-full justify-between items-start gap-1.5">
                             <p className="text-xs font-medium">My Ratings:</p>
                             <div className="flex items-center gap-0.5">
-                                {userRating && Array.from({ length: 5 }).map((_, i) => (
-                                    <Star
-                                        key={i}
-                                        size={13}
-                                        className={
-                                            i < userRating
-                                                ? "fill-[#F4B400] text-[#F4B400]"
-                                                : "text-muted-foreground/30"
-                                        }
-                                    />
-                                ))}
+                                {userRating &&
+                                    Array.from({ length: 5 }).map((_, i) => (
+                                        <Star
+                                            key={i}
+                                            size={13}
+                                            className={
+                                                i < userRating
+                                                    ? "fill-[#F4B400] text-[#F4B400]"
+                                                    : "text-muted-foreground/30"
+                                            }
+                                        />
+                                    ))}
                             </div>
                         </div>
 
@@ -168,20 +189,13 @@ export function WatchedCard({
                     {tags.length > 0 && (
                         <div className="flex flex-wrap gap-1.5">
                             {tags.map((tag) => (
-                                <TagBadge
-                                    key={tag}
-                                    tag={tag}
-                                />
+                                <TagBadge key={tag} tag={tag} />
                             ))}
                         </div>
                     )}
                 </div>
-                <div>
-
-                </div>
-
+                <div></div>
             </div>
-
         </div>
     );
 }

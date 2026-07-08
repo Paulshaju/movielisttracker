@@ -45,16 +45,16 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 
 ## Scripts
 
-| Command               | Description                        |
-| ---------------------- | ----------------------------------- |
-| `pnpm dev`             | Start the development server        |
-| `pnpm build`           | Build for production                |
-| `pnpm start`           | Run the production build            |
-| `pnpm lint`            | Lint the codebase                   |
-| `pnpm test`            | Run tests once                      |
-| `pnpm test:watch`      | Run tests in watch mode             |
-| `pnpm test:coverage`   | Run tests with coverage report      |
-| `pnpm test:ui`         | Run tests with the Vitest UI        |
+| Command              | Description                    |
+| -------------------- | ------------------------------ |
+| `pnpm dev`           | Start the development server   |
+| `pnpm build`         | Build for production           |
+| `pnpm start`         | Run the production build       |
+| `pnpm lint`          | Lint the codebase              |
+| `pnpm test`          | Run tests once                 |
+| `pnpm test:watch`    | Run tests in watch mode        |
+| `pnpm test:coverage` | Run tests with coverage report |
+| `pnpm test:ui`       | Run tests with the Vitest UI   |
 
 ## Project Structure
 
