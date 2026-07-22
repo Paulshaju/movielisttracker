@@ -22,13 +22,6 @@ describe("WatchlistContainer", () => {
     ]);
   });
 
-  it("shows the empty state when there's nothing in the watchlist", () => {
-    render(<WatchlistContainer />);
-
-    expect(screen.getByText("Your watchlist is empty")).toBeInTheDocument();
-    expect(screen.queryByText("Watchlist")).not.toBeInTheDocument();
-  });
-
   it("renders a card per movie once items are added", () => {
     movieStore.playlists.set("watchlist", [
       { imdbID: "tt1", Title: "The Matrix" } as any,

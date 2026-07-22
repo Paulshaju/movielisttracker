@@ -45,7 +45,6 @@ export function AddToLists({
     const [listNameError, setListNameError] = useState<string | null>(null);
     const [pendingList, setPendingList] = useState<string | null>(null);
 
-    const [isSaving, setIsSaving] = useState(false);
     const closeRef = useRef<HTMLButtonElement>(null);
 
     async function handleAddNewList() {
@@ -90,8 +89,7 @@ export function AddToLists({
             const movieDetail = await getMovieDetails(selectedMovie.imdbID);
             addToList(listName, {
                 ...movieDetail,
-                addedAt: new Date().toDateString(),
-                watchedAt: new Date().toDateString(),
+                addedAt: new Date().toDateString()
             });
             // watched and watchlist are mutually exclusive — adding to one
             // pulls the movie out of the other.
@@ -119,12 +117,6 @@ export function AddToLists({
         } finally {
             setPendingList(null);
         }
-    };
-    const handleSave = async () => {
-        setIsSaving(true);
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        setIsSaving(false);
-        closeRef.current?.click();
     };
 
     return (
@@ -252,12 +244,9 @@ export function AddToLists({
                     </div>
                 </div>
                 <DrawerFooter>
-                    <Button onClick={handleSave} disabled={isSaving}>
-                        {isSaving ? <Loader2 className="animate-spin" /> : "Save"}
-                    </Button>
                     <DrawerClose
                         render={
-                            <Button ref={closeRef} variant="outline">
+                            <Button ref={closeRef} variant="default">
                                 Close
                             </Button>
                         }

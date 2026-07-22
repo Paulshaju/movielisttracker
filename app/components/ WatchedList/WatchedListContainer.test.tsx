@@ -38,17 +38,6 @@ describe("WatchedlistContainer", () => {
     vi.clearAllMocks();
   });
 
-  it("shows the empty state when watched is empty, regardless of watchlist", () => {
-    // watchlist having items shouldn't affect this component at all —
-    // this is the exact bug that was here before (checking the wrong array)
-    movieStore.playlists.set("watchlist", [
-      { imdbID: "tt9", Title: "Unrelated" } as any,
-    ]);
-
-    render(<WatchedlistContainer />);
-
-    expect(screen.getByText("Your watchedlist is empty")).toBeInTheDocument();
-  });
 
   it("renders a card per watched movie, ignoring watchlist contents", () => {
     movieStore.playlists.set("watched", [

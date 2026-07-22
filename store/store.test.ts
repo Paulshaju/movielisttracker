@@ -17,9 +17,9 @@ import {
   setMovieRating,
   setMovieNote,
   renameList,
-  getTagsForMovie,
   useTagsForMovie,
 } from "./store";
+import { renderHook } from "@testing-library/react";
 
 const inception: IMovieDetails = {
   Title: "Inception",
@@ -230,14 +230,16 @@ describe("addTagToMovie", () => {
   it("adds a tag to a movie in a list", () => {
     addToWatchlist(asListItem(inception));
     addTagToMovie("tt0087884", "must-rewatch");
-    expect(useTagsForMovie("tt0087884")).toEqual(["must-rewatch"]);
+    const { result } = renderHook(() => useTagsForMovie("tt0087884"));
+    expect(result.current).toEqual(["must-rewatch"]);
   });
 
   it("does not add a duplicate tag to the same movie", () => {
     addToWatchlist(asListItem(inception));
     addTagToMovie("tt0087884", "must-rewatch");
     addTagToMovie("tt0087884", "must-rewatch");
-    expect(useTagsForMovie("tt0087884")).toEqual(["must-rewatch"]);
+    const { result } = renderHook(() => useTagsForMovie("tt0087884"));
+    expect(result.current).toEqual(["must-rewatch"]);
   });
 
   it("adds the tag to the global allTags registry", () => {
@@ -251,9 +253,9 @@ describe("addTagToMovie", () => {
     addToWatchlist(asListItem(interstellar));
     addTagToMovie("tt0087884", "sci-fi");
     addTagToMovie("tt0816692", "sci-fi");
-    expect(movieStore.tags.keys().filter((t) => t === "sci-fi")).toHaveLength(
-      1,
-    );
+    expect(
+      [...movieStore.tags.keys()].filter((t) => t === "sci-fi"),
+    ).toHaveLength(1);
   });
 });
 
@@ -262,13 +264,15 @@ describe("removeTagFromMovie", () => {
     addToWatchlist(asListItem(inception));
     addTagToMovie("tt0087884", "must-rewatch");
     removeTagFromMovie("tt0087884", "must-rewatch");
-    expect(useTagsForMovie("tt0087884")).toEqual([]);
+    const { result } = renderHook(() => useTagsForMovie("tt0087884"));
+    expect(result.current).toEqual([]);
   });
 
   it("does nothing if the tag isn't present", () => {
     addToWatchlist(asListItem(inception));
     removeTagFromMovie("tt0087884", "not-a-tag");
-    expect(useTagsForMovie("tt0087884")).toEqual([]);
+    const { result } = renderHook(() => useTagsForMovie("tt0087884"));
+    expect(result.current).toEqual([]);
   });
 
   it("only removes the specified tag, keeping others", () => {
@@ -276,7 +280,8 @@ describe("removeTagFromMovie", () => {
     addTagToMovie("tt0087884", "tag-a");
     addTagToMovie("tt0087884", "tag-b");
     removeTagFromMovie("tt0087884", "tag-a");
-    expect(useTagsForMovie("tt0087884")).toEqual(["tag-b"]);
+    const { result } = renderHook(() => useTagsForMovie("tt0087884"))
+    expect(result.current).toEqual(["tag-b"]);
   });
 });
 

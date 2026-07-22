@@ -69,7 +69,6 @@ export function AddTagsPopover({
       <PopoverContent className="w-72" side="top" align="end">
         <div className="space-y-3">
           <p className="text-sm font-medium text-foreground">Tags</p>
-
           {availableTags.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {availableTags.map((tag) => (

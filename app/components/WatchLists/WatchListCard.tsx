@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Snapshot } from "valtio";
 import { IPlaylistListItem, IRating } from "@/types";
-import { X, Clock, Trophy } from "lucide-react";
+import { Clock, Trophy, Trash } from "lucide-react";
 import { getRatingBadges } from "@/lib/utils";
 import { WatchedButton } from "../../Common/WatchedButton";
 import {
@@ -66,7 +66,7 @@ export function WatchlistCard({
                         aria-label={`Remove ${movieDetails.Title} from watchlist`}
                         className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
                     >
-                        <X size={13} />
+                        <Trash className="text-destructive" size={15} />
                     </button>
                 </div>
 

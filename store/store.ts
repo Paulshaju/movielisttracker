@@ -1,5 +1,5 @@
 "use client";
-import { IMovieStore, IMovieDetails, IPlaylistListItem } from "@/types";
+import { IMovieStore, IPlaylistListItem } from "@/types";
 import { proxy, subscribe, useSnapshot } from "valtio";
 import { proxyMap } from "valtio/utils";
 
@@ -35,7 +35,8 @@ export function loadInitialState() {
       playlists: proxyMap<string, IPlaylistListItem[]>(parsed.playlists),
       tags: proxyMap<string, string[]>(parsed.tags ?? []),
     };
-  } catch {
+  } catch (error) {
+    console.log('Failed to load initial store date' + error)
     return { playlists: defaultPlaylists(), tags: defaultTags() };
   }
 }
@@ -157,12 +158,6 @@ export const removeTagFromMovie = (movieId: string, tag: string) => {
     movieIds.filter((id) => id !== movieId),
   );
 };
-export const getTagsForMovie = (movieId: string): string[] => {
-  return [...movieStore.tags.entries()]
-    .filter(([, movieIds]) => movieIds.includes(movieId))
-    .map(([tag]) => tag);
-};
-
 export const useTagsForMovie = (movieId: string): string[] => {
   const { tags } = useSnapshot(movieStore);
   return [...tags.entries()]

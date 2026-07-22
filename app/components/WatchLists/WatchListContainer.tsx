@@ -10,19 +10,6 @@ export function WatchlistContainer() {
 
     const watchListItems = snap.playlists.get("watchlist") ?? [];
 
-    if (watchListItems.length === 0) {
-        return (
-            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-12 text-center">
-                <p className="text-sm font-medium text-foreground">
-                    Your watchlist is empty
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                    Search for a movie and add it to see it here.
-                </p>
-            </div>
-        );
-    }
-
     return (
         <div className="w-full space-y-2">
             <div className="flex items-baseline justify-between">

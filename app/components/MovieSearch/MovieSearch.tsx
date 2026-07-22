@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type ChangeEvent } from "react";
+import { useMemo, useState, type ChangeEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { IMovie } from "@/types";
 import { searchMovies } from "../../api/movie.api";
@@ -47,17 +47,19 @@ export function MovieSearch() {
       toast.error("Failed to perform the search.");
     }
   };
-  const debouncedSearchRef = useRef(
-    debounce((searchQuery: string) => {
-      setPage(1);
-      performSearch(searchQuery, 1);
-    }, 200),
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((searchQuery: string) => {
+        setPage(1);
+        performSearch(searchQuery, 1);
+      }, 200),
+    [],
   );
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setResults([]);
     const value = e.target.value;
     setQuery(value);
-    debouncedSearchRef.current(value);
+    debouncedSearch(value);
   };
 
   const goToPage = (nextPage: number) => {

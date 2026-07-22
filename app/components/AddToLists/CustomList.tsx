@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { ListPlus, Trash2, Layers } from "lucide-react";
+import { ListPlus, Trash2, Layers, Projector } from "lucide-react";
 import { useSnapshot } from "valtio";
 import {
     movieStore,
     addNewCustomList,
     deleteCustomList,
-    getList,
 } from "@/store/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -110,7 +109,7 @@ export function CustomList() {
                                     key={listName}
                                     role="button"
                                     tabIndex={0}
-                                    className="group flex flex-col gap-3 rounded-xl border border-border bg-card p-4 text-left transition-all hover:border-primary/40 hover:shadow-md hover:shadow-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 cursor-pointer"
+                                    className="group flex flex-col gap-3 rounded-xl border border-border bg-card p-4 text-left transition-all hover:border-primary/40 hover:shadow-md  focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 cursor-pointer"
                                     onClick={() => setActiveListName(listName)}
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter" || e.key === " ") {
@@ -127,7 +126,7 @@ export function CustomList() {
                                                     key={i}
                                                     className="relative aspect-[2/3] flex-1 overflow-hidden rounded bg-muted/50"
                                                 >
-                                                    {src && (
+                                                    {src ? (
                                                         <Image
                                                             src={src}
                                                             alt=""
@@ -136,7 +135,12 @@ export function CustomList() {
                                                             className="object-cover transition-transform duration-300 group-hover:scale-105"
                                                             unoptimized
                                                         />
-                                                    )}
+                                                    ) :
+                                                        <div className="flex items-center h-full w-full justify-center">
+                                                            <Projector size={40} className="text-slate-500" />
+                                                        </div>
+
+                                                    }
                                                 </div>
                                             ),
                                         )}

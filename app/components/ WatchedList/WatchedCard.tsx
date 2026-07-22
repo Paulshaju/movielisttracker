@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Snapshot } from "valtio";
-import { Star, X, Clock, Trophy, MessageSquareText } from "lucide-react";
+import { Star, Clock, Trophy, MessageSquareText, Trash } from "lucide-react";
 import { getRatingBadges } from "@/lib/utils";
 import { IPlaylistListItem, IRating } from "@/types";
 import {
@@ -89,9 +89,9 @@ export function WatchedCard({
                         data-testid={"Remove"}
                         onClick={() => onRemove(imdbID)}
                         aria-label={`Remove ${Title} from watched`}
-                        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-white opacity-0 transition-colors group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
+                        className="flex h-6 w-6 shrink-0 bg-transparent items-center justify-center rounded-full text-destructive transition-colors hover:bg-destructive/10 hover:text-destructive"
                     >
-                        <X size={13} />
+                        <Trash size={15} />
                     </Button>
                 </div>
 
@@ -160,11 +160,13 @@ export function WatchedCard({
                                     ))}
                             </div>
                         </div>
+                        {
+                            watchedAt && <div className="flex items-center gap-1 text-[11px] text-muted-foreground/70">
+                                <Clock size={10} />
+                                {watchedAt && formatWatchedDate(watchedAt)}
+                            </div>
+                        }
 
-                        <div className="flex items-center gap-1 text-[11px] text-muted-foreground/70">
-                            <Clock size={10} />
-                            {watchedAt && formatWatchedDate(watchedAt)}
-                        </div>
                     </div>
 
                     {/* User's note, if left one */}

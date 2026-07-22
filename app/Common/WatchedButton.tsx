@@ -11,10 +11,8 @@ import {
 } from "@/components/ui/popover";
 
 function StarPicker({
-  value,
   onChange,
 }: {
-  value: number;
   onChange: (n: number) => void;
 }) {
   const [hovered, setHovered] = useState(0);
@@ -32,7 +30,7 @@ function StarPicker({
           <Star
             size={20}
             className={
-              n <= (hovered || value)
+              n <= (hovered)
                 ? "fill-[#F4B400] text-[#F4B400]"
                 : "text-muted-foreground"
             }
@@ -104,7 +102,7 @@ export function WatchedButton({
             <p className="mb-1.5 text-sm font-medium text-foreground">
               Your rating <span className="text-destructive">*</span>
             </p>
-            <StarPicker value={rating} onChange={setRating} />
+            <StarPicker onChange={setRating} />
             {attemptedSubmit && rating === 0 && (
               <p className="mt-1 text-xs text-destructive">
                 Pick a rating to continue.

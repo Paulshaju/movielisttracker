@@ -5,7 +5,7 @@ import { HomeContainer } from "./components/HomeContainer";
 export default async function Home() {
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <header className="sticky top-0 z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-40 w-full bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
         <div className="mx-auto flex h-16 items-center justify-between px-8">
           <div className="flex items-center gap-3">
             <div className="bg-primary/10 h-9 w-9 rounded-md p-2 flex items-center justify-center">

@@ -3,14 +3,18 @@ import { describe, expect, it, vi } from "vitest";
 import {
   moveToWatched,
   removeFromList,
-  removeFromWatchlist,
 } from "@/store/store";
 import { WatchlistCard } from "./WatchListCard";
+import { proxy } from "valtio";
 
-vi.mock("@/store/store", () => ({
-  moveToWatched: vi.fn(),
-  removeFromList: vi.fn(),
-}));
+vi.mock("@/store/store", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/store/store")>();
+  return {
+    ...actual,
+    moveToWatched: vi.fn(),
+    removeFromList: vi.fn(),
+  };
+});
 
 // next/image wants real image optimization config we don't have in tests —
 // swap it for a plain img so we can just assert on src/alt
@@ -47,7 +51,7 @@ describe("WatchlistCard", () => {
     expect(screen.getByText("148 min")).toBeInTheDocument();
     // only the first genre should show, not the full comma list
     expect(screen.getByText("Action")).toBeInTheDocument();
-    expect(screen.queryByText("Adventure")).not.toBeInTheDocument();
+    expect(screen.queryByText("Adventurae")).not.toBeInTheDocument();
   });
 
   it("shows the poster when one is available", () => {

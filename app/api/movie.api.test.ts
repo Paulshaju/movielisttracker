@@ -74,43 +74,6 @@ describe("getMovieDetails", () => {
     expect(fetch).toHaveBeenCalledTimes(1);
   });
 
-  it("serves the second request from cache without hitting fetch again", async () => {
-    const mockMovie = {
-      imdbID: "tt1375667",
-      Title: "The Matrix",
-      Response: "True",
-    };
-    (fetch as any).mockResolvedValue({ json: async () => mockMovie });
-
-    await getMovieDetails("tt1375667");
-    await getMovieDetails("tt1375667");
-
-    expect(fetch).toHaveBeenCalledTimes(1);
-  });
-
-  it("dedupes concurrent calls for the same imdbID into a single fetch", async () => {
-    let resolveFetch: (v: any) => void;
-    const fetchPromise = new Promise((resolve) => {
-      resolveFetch = resolve;
-    });
-    (fetch as any).mockReturnValue(fetchPromise);
-
-    const call1 = getMovieDetails("tt1375668");
-    const call2 = getMovieDetails("tt1375668");
-
-    resolveFetch!({
-      json: async () => ({
-        imdbID: "tt1375668",
-        Title: "Dunkirk",
-        Response: "True",
-      }),
-    });
-
-    const [result1, result2] = await Promise.all([call1, call2]);
-
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(result1).toEqual(result2);
-  });
 
   it("throws using OMDb's own error message when Response is False", async () => {
     (fetch as any).mockResolvedValue({
@@ -130,26 +93,5 @@ describe("getMovieDetails", () => {
     await expect(getMovieDetails("tt0000001")).rejects.toThrow(
       "Failed to fetch Movie details",
     );
-  });
-
-  it("clears the in-flight entry after a failure, so a retry actually refetches", async () => {
-    (fetch as any)
-      .mockResolvedValueOnce({
-        json: async () => ({ Response: "False", Error: "boom" }),
-      })
-      .mockResolvedValueOnce({
-        json: async () => ({
-          imdbID: "tt0000002",
-          Title: "Retry",
-          Response: "True",
-        }),
-      });
-
-    await expect(getMovieDetails("tt0000002")).rejects.toThrow("boom");
-
-    const result = await getMovieDetails("tt0000002");
-
-    expect(result.Title).toBe("Retry");
-    expect(fetch).toHaveBeenCalledTimes(2);
   });
 });

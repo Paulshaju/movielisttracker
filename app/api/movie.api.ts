@@ -19,43 +19,19 @@ export async function searchMovies(
     return data;
 }
 
-// Module-level cache: survives across MovieCard instances/re-renders for
-// the page refresh.
-const detailsCache = new Map<string, IMovieDetails>();
-
-// In-flight requests, keyed by imdbID — prevents duplicate fetches if a
-// user double-clicks a card.
-const inFlight = new Map<string, Promise<IMovieDetails>>();
 
 const API_KEY = process.env.NEXT_OMDB_API_KEY;
 
 export async function getMovieDetails(imdbID: string): Promise<IMovieDetails> {
-    const cached = detailsCache.get(imdbID);
-    if (cached) return cached;
+    const res = await fetch(
+        `https://www.omdbapi.com/?apikey=${API_KEY}&i=${imdbID}&plot=full`,
+        { next: { revalidate: 86400, tags: [`movie-${imdbID}`] } }, // cache 24hr, individually tagged
+    );
+    const data = await res.json();
 
-    const pending = inFlight.get(imdbID);
-    if (pending) return pending;
-
-    const request = (async () => {
-        const res = await fetch(
-            `https://www.omdbapi.com/?apikey=${API_KEY}&i=${imdbID}&plot=full`,
-        );
-        const data = await res.json();
-
-        if (data.Response === "False") {
-            throw new Error(data.Error || "Failed to fetch Movie details");
-        }
-
-        const movie = data as IMovieDetails;
-        detailsCache.set(imdbID, movie);
-        return movie;
-    })();
-
-    inFlight.set(imdbID, request);
-
-    try {
-        return await request;
-    } finally {
-        inFlight.delete(imdbID);
+    if (data.Response === "False") {
+        throw new Error(data.Error || "Failed to fetch Movie details");
     }
+
+    return data as IMovieDetails;
 }
